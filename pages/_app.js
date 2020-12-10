@@ -8,6 +8,7 @@ import { Provider } from '@shopify/app-bridge-react';
 import '@shopify/polaris/dist/styles.css';
 import translations from '@shopify/polaris/locales/en.json';
 import Cookies from 'js-cookie';
+import ClientRouter from '../components/ClientRouter';
 
 class MyApp extends App {
   render() {
@@ -20,6 +21,7 @@ class MyApp extends App {
           <meta charSet="utf-8" />
         </Head>
         <Provider config={config}>
+            <ClientRouter />
             <AppProvider i18n={translations} >
                 <Component {...pageProps} />
             </AppProvider>
