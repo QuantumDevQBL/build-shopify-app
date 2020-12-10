@@ -1,16 +1,22 @@
-import { TextStyle } from '@shopify/polaris';
+import { TextStyle, EmptyState, Layout, Page } from '@shopify/polaris';
+
+const img = 'https://cdn.shopify.com/s/files/1/0757/9955/files/empty-state.svg';
 
 const Index = () => (
-    <div>
-      <p>Vegesims store</p>
-      <p>
-  New URL that visitors should be forwarded to. If you want your store’s
-  homepage, enter <TextStyle variation="code"> / </TextStyle> (a forward slash).
-     </p>
-      <TextStyle variation="subdued">No supplier listed</TextStyle>
-      <TextStyle variation="strong">No supplier listed</TextStyle>
-      <TextStyle variation="positive">No supplier listed</TextStyle>
-    </div>
-  );
-  
-  export default Index;
+  <Page>
+    <Layout>
+      <EmptyState
+        heading="Discount your products temporarily"
+        action={{
+          content: 'Select products',
+          onAction: () => console.log('clicked'),
+        }}
+        image={img}
+      >
+        <p>Select products to change their price temporarily.</p>
+      </EmptyState>
+    </Layout>
+  </Page>
+);
+
+export default Index;
