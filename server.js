@@ -31,6 +31,11 @@ app.prepare().then(() => {
           scopes: ['read_products'],
           afterAuth(ctx) {
             const { shop, accessToken } = ctx.session;
+            ctx.cookies.set('shopOrigin', shop, {
+                httpOnly: false,
+                secure: true,
+                sameSite: 'none'
+              });
             ctx.redirect('/');
           },
         }),
@@ -44,7 +49,7 @@ app.prepare().then(() => {
       ctx.res.statusCode = 200;
       return
     });
-    
+
     //Set your app to run on port 3000
      server.listen(port, () => {
     console.log(`> Ready on http://localhost:${port}`);
