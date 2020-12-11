@@ -1,22 +1,44 @@
 import React from 'react';
 
 import {
+    Banner,
     Card,
     DisplayText,
     Form,
     FormLayout,
+    Frame,
     Layout,
     Page,
     PageActions,
-    TextField
+    TextField,
+    Toast,
   } from '@shopify/polaris';
   import store from 'store-js';
+
+  import gql from 'graphql-tag';
+import { Mutation } from 'react-apollo';
+import { from } from 'apollo-boost';
+
+const UPDATE_PRICE = gql`
+  mutation productVariantUpdate($input: ProductVariantInput!) {
+    productVariantUpdate(input: $input) {
+      product {
+        title
+      }
+      productVariant {
+        id
+        price
+      }
+    }
+  }
+`;
   
   class EditProduct extends React.Component {
     state = {
       discount: '',
       price: '',
-      variantId: ''
+      variantId: '',
+      showToast: false,
     };
   
     componentDidMount() {
@@ -27,8 +49,27 @@ import {
       const { name, price, discount, variantId } = this.state;
   
       return (
+        <Mutation
+          mutation={UPDATE_PRICE}
+        >
+          {(handleSubmit, {error, data}) => {
+              const showError = error && (
+                <Banner status="critical">{error.message}</Banner>
+              );
+              const showToast = data && data.productVariantUpdate && (
+                <Toast
+                  content="Sucessfully updated"
+                  onDismiss={() => this.setState({ showToast: false })}
+                />
+              );
+      return (
+        <Frame>
         <Page>
           <Layout>
+                    {showToast}
+                  <Layout.Section>
+                    {showError}
+                  </Layout.Section>
             <Layout.Section>
               <DisplayText size="large">{name}</DisplayText>
               <Form>
@@ -61,6 +102,13 @@ import {
                       content: 'Save',
                       onAction: () => {
                         console.log('submitted');
+                        const productVariableInput = {
+                            id: variantId,
+                            price: discount,
+                          };
+                          handleSubmit({
+                            variables: { input: productVariableInput },
+                           });
                       }
                     }
                   ]}
@@ -74,7 +122,11 @@ import {
             </Layout.Section>
           </Layout>
         </Page>
+        </Frame>
       );
+    }}
+    </Mutation>
+  );
     }
   
     handleChange = (field) => {
